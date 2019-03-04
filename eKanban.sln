@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eKanban_department", "eKanban\eKanban_department.csproj", "{3011ECE2-BBC2-4C73-BA4C-93CF15D7EB2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eKanban_center", "eKanban_center\eKanban_center.csproj", "{BB00C599-C22B-4DA4-81CC-005569D3EB85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eKanbanConsole", "eKanban_Console\eKanbanConsole.csproj", "{6EE66A87-3D6F-43A2-BBE8-045ADE98919D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3011ECE2-BBC2-4C73-BA4C-93CF15D7EB2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3011ECE2-BBC2-4C73-BA4C-93CF15D7EB2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3011ECE2-BBC2-4C73-BA4C-93CF15D7EB2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3011ECE2-BBC2-4C73-BA4C-93CF15D7EB2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB00C599-C22B-4DA4-81CC-005569D3EB85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB00C599-C22B-4DA4-81CC-005569D3EB85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB00C599-C22B-4DA4-81CC-005569D3EB85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB00C599-C22B-4DA4-81CC-005569D3EB85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EE66A87-3D6F-43A2-BBE8-045ADE98919D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EE66A87-3D6F-43A2-BBE8-045ADE98919D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EE66A87-3D6F-43A2-BBE8-045ADE98919D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EE66A87-3D6F-43A2-BBE8-045ADE98919D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,23 @@
+﻿<Window x:Class="eKanban.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:eKanban"
+        mc:Ignorable="d"
+        Title="延时设置" Height="200" Width="300" FontSize="16" Icon="Images/logo.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15*"/>
+            <RowDefinition Height="35*"/>
+            <RowDefinition Height="35*"/>
+            <RowDefinition Height="15*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="1" Content="设置时间（s）" Margin="20,0,0,0"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20,0,0,0">
+            <ScrollBar Name="scroll_value" VerticalAlignment="Center" Height="40" Margin="0,2,0,1" Maximum="60" Value="2" SmallChange="1" Scroll="ScrollBar_Scroll"/>
+            <TextBox x:Name="txt_delay" Width="100" VerticalAlignment="Center" Margin="5,0,0,0" Text="5" KeyDown="txt_delay_KeyDown"/>
+            <Button x:Name="btn_settings" Content="确 定" VerticalAlignment="Center" Margin="20,8,0,8" Click="btn_settings_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

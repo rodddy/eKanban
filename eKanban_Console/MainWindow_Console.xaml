@@ -1,0 +1,215 @@
+﻿<Window
+    x:Class="eKanban_Console.MainWindow_Console"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tmtool="clr-namespace:Utility.Tool.Controls.View;assembly=Utility.Tool.Controls"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" 
+        xmlns:local="clr-namespace:eKanban_Console"
+        mc:Ignorable="d"
+        Title="电子看板控制台系统" Height="720" Width="1280" FontSize="18" ResizeMode="NoResize" Icon="Images/logo.ico" WindowState="Maximized" Loaded="Window_Loaded" WindowStyle="None">
+
+    <Window.Resources>
+
+        <Style x:Key="ListViewItem1" TargetType="{x:Type ListViewItem}">
+            
+            <Style.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ItemsControl.AlternationIndex" Value="1" />
+                        <Condition Property="IsSelected" Value="False" />
+                        <Condition Property="IsMouseOver" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="#AFEEEE"/>
+                   
+                </MultiTrigger>
+            </Style.Triggers>
+            <EventSetter Event="MouseEnter" Handler="ListViewItem_MouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="ListViewItem_MouseLeave"/>
+            <Setter Property="MinHeight" Value="60"/>
+        </Style>
+        
+        <!--<CollectionViewSource
+            x:Key='src' Source="{Binding Source={StaticResource DeviceData},XPath=Item}">
+
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="@Catalog"/>
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>-->
+        
+        <DataTemplate x:Key="activationDt">
+            <Image Name="img_activation" MaxHeight="40" Margin="8" Source="Images/chart.png" MouseLeftButtonUp="img_activation_MouseLeftButtonUp" />
+        </DataTemplate>
+        <DataTemplate x:Key="yrstatusDt">
+            <Image Name="img_yr" MaxHeight="40" Margin="8" Source="Images/time.png" MouseLeftButtonUp="img_yr_MouseLeftButtonUp"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="logDt">
+            <Image Name="img_log" MaxHeight="50" Source="Images/log.png" MouseLeftButtonUp="img_log_MouseLeftButtonUp"/>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="35*"/>
+            <RowDefinition Height="35*"/>
+            <RowDefinition Height="13*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="70*"/>
+        </Grid.ColumnDefinitions>
+        <Image Grid.ColumnSpan="10" Source="Images/logo.png" Stretch="Fill" />
+        <Image Name="img_minimize" Source="Images/minimize.png" Grid.Column="1" Width="25" Margin="0,5,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" MouseLeftButtonUp="img_minimize_MouseLeftButtonUp"/>
+        <StackPanel Grid.ColumnSpan="10" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <!--<TextBlock Name="tb_department" Text="五车间" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="60"/>-->
+            <TextBlock Text="设备状态监控与追踪系统" Foreground="#ffc000" VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="60"/>
+        </StackPanel>
+        <StackPanel Grid.ColumnSpan="10" HorizontalAlignment="Right" Margin="0,20,5,0" VerticalAlignment="Center">
+            <TextBlock x:Name="tb_clock"  Foreground="white" FontSize="20" FontWeight="Bold" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="当前班次：" Foreground="white" FontSize="20" FontWeight="Bold"/>
+                <TextBlock x:Name="tb_class" Text="白班" Foreground="white" FontSize="20" FontWeight="Bold"/>
+            </StackPanel>
+        </StackPanel>
+        <ComboBox Name="cmb_department" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" Margin="20" IsEditable="False" BorderBrush="#e8e8e8" SelectedIndex="0" ItemsSource="{Binding DepartmentList}" SelectionChanged="cmb_department_SelectionChanged"/>
+        <!--<TreeView Name="TreeViewOrg" Grid.Column="0" Grid.Row="1" Grid.RowSpan="1" ScrollViewer.VerticalScrollBarVisibility="Visible" BorderThickness="1" BorderBrush="#BBB" Background="#fef9eb"
+                              Margin="10,5,10,0" ItemTemplate="{StaticResource ItemNode}" Style="{StaticResource DefaultTreeView}" SelectedItemChanged="TreeViewOrg_SelectedItemChanged" MouseEnter="TreeViewOrg_MouseEnter"/>-->
+        <ListView Grid.Column="0" Name="lv_Lines" Grid.Row="1" Grid.RowSpan="5" Margin="10,70,10,10" ItemsSource='{Binding Department_5}' ItemContainerStyle="{StaticResource ListViewItem1}" AlternationCount="2" ScrollViewer.VerticalScrollBarVisibility="Visible">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="产 线" Width="120"  DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="稼动率" Width="110" CellTemplate="{StaticResource activationDt}"/>
+                    <GridViewColumn Header="故障时间" Width="110" CellTemplate="{StaticResource yrstatusDt}"/>
+                    <GridViewColumn Header="维修日志" Width="110" CellTemplate="{StaticResource logDt}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Grid Name="grid_export" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Background="White" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="50*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Name="tb_activation" Text="当前车间设备稼动率" HorizontalAlignment="Center" VerticalAlignment="Top" Height="50" Margin="15" FontWeight="Bold" FontSize="18"/>
+            <TextBlock Grid.Row="1" Name="tb_yrtime" Text="当前车间产线异常时间统计" HorizontalAlignment="Center" VerticalAlignment="Top" Height="50" Margin="15" FontWeight="Bold" FontSize="18"/>
+
+            <local:Chart_Activation Grid.Row="0" x:Name="chart_Activation"  Margin="10,50,10,10"></local:Chart_Activation>
+            <local:Chart_YR Grid.Row="1" x:Name="chart_YR"  Margin="10,50,10,10"></local:Chart_YR>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="45*"/>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="20*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <StackPanel Margin="20,10,20,10" VerticalAlignment="Center">
+                    <TextBlock Text="起始时间" Margin="0,10,0,5"/>
+                    <tmtool:DateTimePicker Name="dt_start" FontSize="12" Margin="0,10,0,0"/>
+                </StackPanel>
+                <StackPanel Margin="20,10,20,10" VerticalAlignment="Center">
+                    <TextBlock Text="结束时间" Margin="0,10,0,5"/>
+                    <tmtool:DateTimePicker Name="dt_end"  FontSize="12" Margin="0,10,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="10,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Button Name="btn_check" Style="{StaticResource BtnImageStyle4}" Click="btn_check_Click"/>
+                    <TextBlock Text="历史查询"/>
+                </StackPanel>
+
+                <!--<Button Name="btn_check" Margin="20,0,20,0" VerticalAlignment="Center" Content="历史查询" Style="{StaticResource BtnImgTxtStyle1}" Click="btn_check_Click"/>-->
+
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="10,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Button Name="btn_setting" Style="{StaticResource BtnImageStyle1}" Click="btn_setting_Click"/>
+                <TextBlock Text="参数设置"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Margin="10,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Button Name="btn_save" Style="{StaticResource BtnImageStyle2}" Click="btn_save_Click"/>
+                <TextBlock Text="导出报表"/>
+            </StackPanel>
+            <StackPanel Grid.Column="3" Margin="10,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Button Name="btn_exit" Style="{StaticResource BtnImageStyle3}" Click="btn_exit_Click"/>
+                <TextBlock Text="退  出" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+        <StatusBar Grid.Row="4" Grid.ColumnSpan="10">
+            <TextBlock Name="tb_status" Margin="5,0,5,0" VerticalAlignment="Center"/>
+        </StatusBar>
+        <!--<Grid Grid.Column="0" Grid.Row="1" Grid.RowSpan="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="Line" VerticalAlignment="Center"/>
+            <Label Grid.Column="1" Grid.Row="0" Content="稼动率" VerticalAlignment="Center"/>
+            <Label Grid.Column="2" Grid.Row="0" Content="故障时间" VerticalAlignment="Center"/>
+            <Label Grid.Column="3" Grid.Row="0" Content="维修日志" VerticalAlignment="Center"/>
+
+            <Label Grid.Column="0" Grid.Row="1" Content="Line 1"/>
+            <Image Grid.Column="1" Grid.Row="1" Name="image_11" Source="Images/chart.png" Height="30"/>
+            <Image Grid.Column="2" Grid.Row="1" Name="image_12" Source="Images/time.png" Height="30"/>
+            <Image Grid.Column="3" Grid.Row="1" Name="image_13" Source="Images/log.png" Height="30"/>
+            
+            <Label Grid.Column="0" Grid.Row="2" Content="Line 2"/>
+            <Image Grid.Column="1" Grid.Row="2" Name="image_21" Source="Images/chart.png" Height="30"/>
+            <Image Grid.Column="2" Grid.Row="2" Name="image_22" Source="Images/time.png" Height="30"/>
+            <Image Grid.Column="3" Grid.Row="2" Name="image_23" Source="Images/log.png" Height="30"/>
+            
+            <Label Grid.Column="0" Grid.Row="3" Content="Line 3"/>
+            <Image Grid.Column="1" Grid.Row="3" Name="image_31" Source="Images/chart.png" Height="30"/>
+            <Image Grid.Column="2" Grid.Row="3" Name="image_32" Source="Images/time.png" Height="30"/>
+            <Image Grid.Column="3" Grid.Row="3" Name="image_33" Source="Images/log.png" Height="30"/>
+            
+            <Label Grid.Column="0" Grid.Row="4" Content="Line 4"/>
+            <Image Grid.Column="1" Grid.Row="4" Name="image_41" Source="Images/chart.png" Height="30"/>
+            <Image Grid.Column="2" Grid.Row="4" Name="image_42" Source="Images/time.png" Height="30"/>
+            <Image Grid.Column="3" Grid.Row="4" Name="image_43" Source="Images/log.png" Height="30"/>
+            
+            <Label Grid.Column="0" Grid.Row="5" Content="Line"/>
+            <Image Grid.Column="1" Grid.Row="5" Name="image_51" Source="Images/chart.png" Height="30"/>
+            <Image Grid.Column="2" Grid.Row="5" Name="image_52" Source="Images/time.png" Height="30"/>
+            <Image Grid.Column="3" Grid.Row="5" Name="image_53" Source="Images/log.png" Height="30"/>
+            
+            <Label Grid.Column="0" Grid.Row="6" Content="Line"/>
+            <Image Grid.Column="1" Grid.Row="6" Name="image_61" Source="Images/chart.png" Height="30"/>
+            <Image Grid.Column="2" Grid.Row="6" Name="image_62" Source="Images/time.png" Height="30"/>
+            <Image Grid.Column="3" Grid.Row="6" Name="image_63" Source="Images/log.png" Height="30"/>
+
+            <Label Grid.Column="0" Grid.Row="7" Content="Line"/>
+            <Image Grid.Column="1" Grid.Row="7" Name="image_71" Source="Images/chart.png" Height="30"/>
+            <Image Grid.Column="2" Grid.Row="7" Name="image_72" Source="Images/time.png" Height="30"/>
+            <Image Grid.Column="3" Grid.Row="7" Name="image_73" Source="Images/log.png" Height="30"/>
+            
+            <Label Grid.Column="0" Grid.Row="8" Content="Line"/>
+            <Image Grid.Column="1" Grid.Row="8" Name="image_81" Source="Images/chart.png" Height="30"/>
+            <Image Grid.Column="2" Grid.Row="8" Name="image_82" Source="Images/time.png" Height="30"/>
+            <Image Grid.Column="3" Grid.Row="8" Name="image_83" Source="Images/log.png" Height="30"/>
+
+            <Label Grid.Column="0" Grid.Row="9" Content="Line"/>
+            <Image Grid.Column="1" Grid.Row="9" Name="image_91" Source="Images/chart.png" Height="30"/>
+            <Image Grid.Column="2" Grid.Row="9" Name="image_92" Source="Images/time.png" Height="30"/>
+            <Image Grid.Column="3" Grid.Row="9" Name="image_93" Source="Images/log.png" Height="30"/>
+
+            <Label Grid.Column="0" Grid.Row="10" Content="Line"/>
+            <Image Grid.Column="1" Grid.Row="10" Name="image_101" Source="Images/chart.png" Height="30"/>
+            <Image Grid.Column="2" Grid.Row="10" Name="image_102" Source="Images/time.png" Height="30"/>
+            <Image Grid.Column="3" Grid.Row="10" Name="image_103" Source="Images/log.png" Height="30"/>
+        </Grid>-->
+    </Grid>
+</Window>
