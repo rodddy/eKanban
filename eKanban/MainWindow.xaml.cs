@@ -38,7 +38,7 @@ namespace eKanban
         private int[] GYRTime = new int[190];
         private int Department = 5;
 
-        private string fileConfig = "DeviceStatusConfig.txt";
+        private string fileConfig = "DeviceStatusLog.txt";
 
         public MainWindow()
         {
@@ -87,10 +87,11 @@ namespace eKanban
             }
             string temp_sr = "";
             string command = "select top 1* from device_statusCount order by UpdateTime desc";
-            SqlDataReader sr =  sqlHelper.ExecuteReader(command);
-            while (sr.Read()) {
-                try
-                {
+            try
+            {
+                SqlDataReader sr = sqlHelper.ExecuteReader(command);
+                while (sr.Read()) {
+
 
                     temp_sr = sr["UpdateTime"].ToString();
 
@@ -106,10 +107,9 @@ namespace eKanban
                         }
                     }
                 }
-                catch (Exception err) { Console.WriteLine(err.Message); }
-
 
             }
+            catch (Exception err) { Console.WriteLine(err.Message); }
 
         }
 
@@ -160,10 +160,10 @@ namespace eKanban
 
                    for(int i = 0; i < 10; i++)
                     {
-                        DeviceStatus[channel - 1, i + 3] = Math.Max((byte)0, DeviceOffFlag[channel - 1, i + 3]);
+                        //DeviceStatus[channel - 1, i + 3] = Math.Max((byte)0, DeviceOffFlag[channel - 1, i + 3]);
                         string str = "Ellipse_" + channel.ToString() + (i + 1).ToString();
                         Ellipse ell = FindName(str) as Ellipse;
-                        if (DeviceStatus[channel - 1, i+3] == 0)
+                        if (DeviceOffFlag[channel - 1, i+3] == 0)
                             ell.Fill = new SolidColorBrush(Colors.Gray);
                         else
                             ell.Fill = new SolidColorBrush(Colors.Transparent);
@@ -204,17 +204,19 @@ namespace eKanban
 
             try
             {
+                
                 string[] arr_name = ell.Name.Split('_');
                 if ((arr_name[1]).Length == 2)
                 {
                     Line = int.Parse(arr_name[1].Substring(0, 1)) - 1;
                     IndexOfDevice = int.Parse(arr_name[1].Substring(1, 1)) + 2;
-
-                    if(DeviceOffFlag[Line, IndexOfDevice] == 0)
-                        DeviceOffFlag[Line, IndexOfDevice] = 8;
-                    else
-                        DeviceOffFlag[Line, IndexOfDevice] = 0;
-
+                    if (DeviceOffInitalFlag[Line, IndexOfDevice] == 0 && bUpdateFlag[Line] == 1)
+                    {
+                        if (DeviceOffFlag[Line, IndexOfDevice] == 0)
+                            DeviceOffFlag[Line, IndexOfDevice] = 8;
+                        else
+                            DeviceOffFlag[Line, IndexOfDevice] = 0;
+                    }
                     Console.WriteLine(Line.ToString() + ";" + IndexOfDevice.ToString() + ";");
                 }
                 else if ((arr_name[1]).Length == 3)
@@ -222,10 +224,13 @@ namespace eKanban
                     Line = int.Parse(arr_name[1].Substring(0, 2)) - 1;
                     IndexOfDevice = int.Parse(arr_name[1].Substring(2, 1)) + 2;
 
-                    if (DeviceOffFlag[Line, IndexOfDevice] == 0)
-                        DeviceOffFlag[Line, IndexOfDevice] = 8;
-                    else
-                        DeviceOffFlag[Line, IndexOfDevice] = 0;
+                    if (DeviceOffInitalFlag[Line, IndexOfDevice] == 0 && bUpdateFlag[Line] == 1)
+                    {
+                        if (DeviceOffFlag[Line, IndexOfDevice] == 0)
+                            DeviceOffFlag[Line, IndexOfDevice] = 8;
+                        else
+                            DeviceOffFlag[Line, IndexOfDevice] = 0;
+                    }
 
                     Console.WriteLine(Line.ToString() + ";" + IndexOfDevice.ToString() + ";");
                 }

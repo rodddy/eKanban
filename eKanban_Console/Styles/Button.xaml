@@ -111,6 +111,27 @@
         </Setter>
     </Style>
     
+    <Style x:Key="BtnImageStyle5" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                        <Image x:Name="Img" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/eKanban_Console;component/Images/return.png" Stretch="None"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Img" Property="Source" Value="/eKanban_Console;component/Images/return.png"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Img" Property="Source" Value="/eKanban_Console;component/Images/return.png"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="BtnImgTxtStyle1" TargetType="Button">
         <Setter Property="Foreground" Value="#555"/>
         <Setter Property="Template">

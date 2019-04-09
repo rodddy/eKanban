@@ -82,7 +82,7 @@ namespace eKanban_Console
             string str = tb_usr.Text + "," + tb_psd.Password;
             if (Array.IndexOf(strInfoList, str) >= 0)
             {
-                Setting_Win setting_frm = new Setting_Win();
+                Setting_Win_V2 setting_frm = new Setting_Win_V2();
                 setting_frm.Show();
                 this.Close();
             }

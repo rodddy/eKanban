@@ -1,0 +1,152 @@
+﻿<Window x:Class="eKanban_Console.Setting_Win_V2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:tmtool="clr-namespace:Utility.Tool.Controls.View;assembly=Utility.Tool.Controls"
+
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:eKanban_Console"
+        mc:Ignorable="d"
+        Title="设置" Height="630" Width="710" WindowStyle="None" FontSize="14" Loaded="Window_Loaded" Icon="Images/logo.ico">
+    <Grid Margin="10,0,10,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="20*"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="30"/>
+           
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="105"/>
+
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="30"/>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="18*"/>
+            <ColumnDefinition Width="24*"/>
+            <ColumnDefinition Width="44*"/>
+            <ColumnDefinition Width="22*"/>
+            <ColumnDefinition Width="24*"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Grid.ColumnSpan="10" Source="Images/logo.png" Stretch="Fill" Margin="-10,0,-10,0" MouseLeftButtonDown="Image_MouseLeftButtonDown" />
+        <Image Grid.ColumnSpan="10" Name="img_close" Source="Images/close.png" Grid.Column="1" Width="25" Margin="-10,2,-8,0" VerticalAlignment="Top" HorizontalAlignment="Right" MouseLeftButtonUp="img_close_MouseLeftButtonUp"/>
+        
+        <TextBlock Grid.ColumnSpan="10" Grid.Row="1" Text="紧急联系人设置" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+      
+
+        <DataGrid x:Name="dataSettings" Grid.Row="2" Grid.ColumnSpan="10" AutoGenerateColumns="False"  VerticalAlignment="Top"
+                                  CanUserSortColumns="False" Margin="0 5 0 5" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  CanUserResizeColumns="False" CanUserResizeRows="False"  SelectionMode="Single"
+                                  CanUserReorderColumns="False" AlternationCount="2"  RowHeaderWidth="0" ItemsSource="{Binding IsAsync=True}" MouseLeftButtonUp="dataSettings_MouseLeftButtonUp">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="姓   名" IsReadOnly="True" Width="90"  Binding="{Binding ContactName,Mode=TwoWay}"/>
+                <DataGridTextColumn Header="电   话" IsReadOnly="True" Width="120"  Binding="{Binding ContactPhone,Mode=TwoWay}"/>
+                <DataGridTextColumn Header="E-mail" IsReadOnly="True" Width="220"  Binding="{Binding ContactMail,Mode=TwoWay}"/>
+                <DataGridTextColumn Header="报警时间(min)" IsReadOnly="True" Width="110"  Binding="{Binding ContactMin,Mode=TwoWay}"/>
+                <DataGridTextColumn Header="报警优先级" IsReadOnly="True" Width="120"  Binding="{Binding ContactType,Mode=TwoWay}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!--<ListView Name="dataSettings" Grid.Row="2" Grid.ColumnSpan="10" AlternationCount="2" ItemsSource="{Binding IsAsync=True}" MouseLeftButtonUp="dataSettings_MouseLeftButtonUp">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="姓   名"  Width="90"  DisplayMemberBinding="{Binding ContactName}"/>
+                    <GridViewColumn Header="电   话"   Width="120"  DisplayMemberBinding="{Binding ContactPhone}"/>
+                    <GridViewColumn Header="E-mail"  Width="220"  DisplayMemberBinding="{Binding MaintainLog}"/>
+                    <GridViewColumn Header="报警时间(min)"  Width="110"  DisplayMemberBinding="{Binding ContactMail}"/>
+                    <GridViewColumn Header="报警优先级"  Width="120"  DisplayMemberBinding="{Binding ContactType}"/>
+
+                </GridView>
+            </ListView.View>
+        </ListView>-->
+
+
+        <TextBlock Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="10" Text="报警时间设置" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+
+
+        <!--<TextBlock Grid.Column="0" Grid.Row="6" Text="姓  名" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Grid.Row="6" Text="电  话" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="2" Grid.Row="6" Text="E-mail" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="3" Grid.Row="6" Text="报警时间" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="4" Grid.Row="6" Text="报警优先级" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
+
+        <TextBox Grid.Column="0" Grid.Row="3" Name="tb_name" Margin="10,2,10,2" VerticalAlignment="Center"/>
+        <TextBox Grid.Column="1" Grid.Row="3" Name="tb_phone" Margin="10,2,10,2" VerticalAlignment="Center"/>
+        <TextBox Grid.Column="2" Grid.Row="3" Name="tb_mail" Margin="10,2,10,2" VerticalAlignment="Center"/>
+        <TextBox Grid.Column="3" Grid.Row="3" Name="tb_time" Margin="10,2,10,2" IsReadOnly="True" VerticalAlignment="Center"/>
+        <ComboBox Grid.Column="4" Grid.Row="3" Name="cmb_type" SelectedIndex="0" Margin="10,2,10,2" VerticalAlignment="Center" Background="Transparent" SelectionChanged="cmb_type_SelectionChanged">
+            <ComboBoxItem Content="第一联系人"/>
+            <ComboBoxItem Content="第二联系人"/>
+            <ComboBoxItem Content="第三联系人"/>
+        </ComboBox>
+
+        <Button Name="btn_add" Content="添  加" FontSize="16" Grid.Column="1" Grid.Row="4" Style="{StaticResource BtnInfoStyle}" Click="btn_add_Click"/>
+        <Button Name="btn_delete" Content="删  除" FontSize="16" Grid.Column="2" Grid.Row="4" Style="{StaticResource BtnInfoStyle}" Click="btn_delete_Click"/>
+        <Button Name="btn_modify" Content="修  改" FontSize="16" Grid.Column="3" Grid.Row="4" Style="{StaticResource BtnInfoStyle}" Click="btn_modify_Click"/>
+        
+        <TextBlock Grid.ColumnSpan="10" Grid.Row="5" Text="紧急联系时间设置" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+
+        <Grid Grid.Row="6" Grid.ColumnSpan="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="15*"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Grid.Column="0" Text="第一次报警时间(min)：" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="2" Text="第二次报警时间(min)：" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="4" Text="第三次报警时间(min)：" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+            <TextBox Grid.Column="1" Name="tb_time_1" Text="15" Margin="5,2,5,2" VerticalAlignment="Center"/>
+            <TextBox Grid.Column="3" Name="tb_time_2" Text="30" Margin="5,2,5,2" VerticalAlignment="Center"/>
+            <TextBox Grid.Column="5" Name="tb_time_3" Text="45" Margin="5,2,5,2" VerticalAlignment="Center"/>
+            <Button  Grid.Column="7" Grid.Row="9" Name="btn_setting" FontSize="16" Style="{StaticResource BtnInfoStyle}" Content="设  置" Click="btn_setting_Click"/>
+
+        </Grid>
+       
+        <TextBlock Grid.ColumnSpan="10" Grid.Row="7" Text="夜班休息时间" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+        <Grid Grid.Row="8" Grid.ColumnSpan="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15*"/>
+                <ColumnDefinition Width="35*"/>
+                <ColumnDefinition Width="35*"/>
+                <ColumnDefinition Width="15*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="起始时间" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="结束时间" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <TextBlock Text="时间段1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="时间段2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <tmtool:DateTimePicker Name="dt1_start" Grid.Column="1" Grid.Row="1" FontSize="14"/>
+            <tmtool:DateTimePicker Name="dt1_end" Grid.Column="2" Grid.Row="1" FontSize="14"/>
+
+            <tmtool:DateTimePicker Name="dt2_start" Grid.Column="1" Grid.Row="2" FontSize="14"/>
+            <tmtool:DateTimePicker Name="dt2_end" Grid.Column="2" Grid.Row="2" FontSize="14"/>
+
+            <Button  Grid.Column="4" Grid.Row="1" Grid.RowSpan="2" Name="btn_sleep" FontSize="16" Style="{StaticResource BtnInfoStyle}" Content="设  置" HorizontalAlignment="Right" Margin="10,0,10,0" Click="btn_sleep_Click"/>
+
+        </Grid>
+
+        <TextBlock Grid.ColumnSpan="10" Grid.Row="9" Text="模式设置" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+        
+        <RadioButton Grid.Column="1" Grid.Row="10" Name="rb_norm" VerticalAlignment="Center" FontSize="20" Content="正常" HorizontalAlignment="Center" Click="RadioButton_Click" IsChecked="True"/>
+        <RadioButton Grid.Column="2" Grid.Row="10" Name="rb_demo" VerticalAlignment="Center" FontSize="20" Content="展示" HorizontalAlignment="Center" Click="RadioButton_Click"/>
+        <Button  Grid.Column="4" Grid.Row="10" Name="btn_save" FontSize="16" Style="{StaticResource BtnInfoStyle}" Content="确  定" HorizontalAlignment="Right" Margin="10,0,10,0" Click="btn_save_Click"/>
+        
+    </Grid>
+</Window>

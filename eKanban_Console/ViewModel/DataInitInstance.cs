@@ -17,6 +17,15 @@ namespace eKanban_Console
 
     }
 
+    public class ContactInfo
+    {
+        public string ContactName { get; set; }
+        public string ContactPhone { get; set; }
+        public string ContactMail { get; set; }
+        public string ContactMin { get; set; }
+        public string ContactType { get; set; }
+    }
+
     public class DeviceInfo {
         public string Name { set; get; }
         public string Catalog { set; get;}
