@@ -52,9 +52,9 @@ namespace eKanban_Console
 
         private string[] Line_Sets = new string[10] { "SMT 09线","SMT 10线", "SMT 11线", "SMT 12线", "SMT 13线", "SMT 14线", "SMT 15线", "SMT 16线", "SMT 17线", "SMT 22线"};
 
-        private ChartValues<double> act_value = new ChartValues<double>();
-        private ChartValues<double> y_value = new ChartValues<double>();
-        private ChartValues<double> r_value = new ChartValues<double>();
+        private ChartValues<double> act_value = new ChartValues<double> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        private ChartValues<double> y_value = new ChartValues<double> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        private ChartValues<double> r_value = new ChartValues<double> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         private int currentDepartment = 5;
         private int currentLine = 0;
@@ -65,6 +65,7 @@ namespace eKanban_Console
         private ListViewItem itm_selected;// selected listview item
 
         public static MainWindow_Console frm = null;
+        public int status = 0;
 
         public MainWindow_Console()
         {
@@ -151,8 +152,13 @@ namespace eKanban_Console
                     arr[i] = arrActivationPerMechine[currentLine * 6 + i];
                     arrStatus[i] = deviceStatus[currentLine * 6 + i];
                 }
-                act_win.setParams(Line_Sets[currentLine], arrStatus, arr);
-                act_win.Show();
+                if (arrStatus.Sum() == 48)
+                    MessageBox.Show("该产线没有数据！");
+                else
+                {
+                    act_win.setParams(Line_Sets[currentLine], arrStatus, arr);
+                    act_win.Show();
+                }
             }
             else {
                 MessageBox.Show("该产线不存在！");
@@ -177,8 +183,13 @@ namespace eKanban_Console
                     arrStatus[i] = deviceStatus[currentLine * 6 + i];
                 }
                 //arr = new int[12] { 15, 85, 48, 96, 45, 85, 74, 48, 34, 55, 48, 48 };
-                yr_win.setParams(Line_Sets[currentLine], arrStatus, arr);
-                yr_win.Show();
+                if (arrStatus.Sum() == 48)
+                    MessageBox.Show("该产线没有数据！");
+                else
+                {
+                    yr_win.setParams(Line_Sets[currentLine], arrStatus, arr);
+                    yr_win.Show();
+                }
             }
             else
             {
@@ -214,7 +225,18 @@ namespace eKanban_Console
             }
             catch (Exception err) { Console.WriteLine(err.Message); }
         }
-
+        
+        private void btn_return_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                thread = new Thread(UpdateData);
+                thread.Start();
+                thread.IsBackground = true;
+            }
+            catch (Exception err) { Console.WriteLine(err.Message); }
+        }
+        
         private void btn_setting_Click(object sender, RoutedEventArgs e)
         {
             //Setting_Win setting_frm = new Setting_Win();
@@ -226,105 +248,147 @@ namespace eKanban_Console
 
         private void btn_save_Click(object sender, RoutedEventArgs e)
         {
-            if (!bFlagUpdateData)
-            {
-                MessageBox.Show("当前时间段没有数据！");
-                return;
+            //string messageBoxText = "导出历史数据";
+            //string caption = "导出数据";
+            //MessageBoxButton button = MessageBoxButton.YesNoCancel;
+            //MessageBoxImage icon = MessageBoxImage.Warning;
+            //MessageBoxResult rlt= MessageBox.Show(messageBoxText, caption, button, icon);
+            //switch (rlt)
+            //{
+            //    case MessageBoxResult.Yes:
+            //        // ...                      
+            //        break;
+            //    case MessageBoxResult.No:
+            //        // ...                      
+            //        break;
+            //    case MessageBoxResult.Cancel:
+            //        // ...                     
+            //        break;
+            //}
+
+            OutputDialog dlg = new OutputDialog();
+            dlg.ShowDialog();
+
+            switch (frm.status) {
+
+                case 2:
+                    {
+                        if (!bFlagUpdateData)
+                        {
+                            MessageBox.Show("当前时间段没有数据！");
+                            return;
+                        }
+
+                        Microsoft.Win32.SaveFileDialog ofd = new Microsoft.Win32.SaveFileDialog();
+                        ofd.DefaultExt = ".csv";
+                        ofd.Filter = "文件(*.csv)|*.csv|图像文件|*.bmp";
+                        ofd.FileName = "五车间设备状态统计_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                        string strFileName = ofd.FileName;
+                        ofd.CheckFileExists = false;
+
+                        ofd.ValidateNames = true;
+                        if (ofd.ShowDialog() == true)
+                        {
+                            strFileName = ofd.FileName;
+
+                            //其他代码
+                        }
+                        string extension = System.IO.Path.GetExtension(strFileName);
+                        if (extension == ".csv")
+                        {
+                            FileInfo fi = new FileInfo(strFileName);
+                            if (!fi.Directory.Exists)
+                            {
+                                fi.Directory.Create();
+                            }
+                            FileStream fs = new FileStream(strFileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
+                            //StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.Default);
+                            StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8);
+
+                            //write columns header
+                            string data = "项目," + string.Join(",", Line_Sets);
+                            sw.WriteLine(data);
+
+
+                            //arrActivation = new int[10];
+                            data = "稼动率," + string.Join(",", arrActivation);
+                            sw.WriteLine(data);
+
+                            //line light status ;GYRTime = new int[30];
+                            string[] arr_light = new string[3] { "正常时间(min)", "等待时间(min)", "故障时间(min)" };
+                            for (int i = 0; i < 3; i++)
+                            {
+                                data = arr_light[i] + ",";
+                                for (int j = 0; j < 10; j++)
+                                {
+                                    data += GYRTime[j * 3 + i].ToString() + ",";
+                                }
+                                sw.WriteLine(data);
+                            }
+
+                            //each Mechine activiation  arrActivationPerMechine = new int[60];
+
+                            for (int i = 0; i < 6; i++)
+                            {
+                                data = DeviceInfo.Device_Set[i] + " 稼动率,";
+                                for (int j = 0; j < 10; j++)
+                                {
+                                    data += arrActivationPerMechine[j * 6 + i].ToString() + ",";
+                                }
+                                sw.WriteLine(data);
+                            }
+
+                            //each Mechine GYRTime, GYRTimePerMechine = new int[190];
+                            for (int i = 0; i < 6; i++)
+                            {
+                                data = DeviceInfo.Device_Set[i] + " " + arr_light[0] + ",";
+                                for (int j = 0; j < 10; j++)
+                                {
+                                    data += GYRTimePerMechine[j * 19 + i].ToString() + ",";
+                                }
+                                sw.WriteLine(data);
+
+                                data = DeviceInfo.Device_Set[i] + " " + arr_light[1] + ",";
+                                for (int j = 0; j < 10; j++)
+                                {
+                                    data += GYRTimePerMechine[j * 19 + i + 6].ToString() + ",";
+                                }
+                                sw.WriteLine(data);
+
+                                data = DeviceInfo.Device_Set[i] + " " + arr_light[2] + ",";
+                                for (int j = 0; j < 10; j++)
+                                {
+                                    data += GYRTimePerMechine[j * 19 + i + 12].ToString() + ",";
+                                }
+                                sw.WriteLine(data);
+                            }
+                            sw.Close();
+                            fs.Close();
+
+                        }
+                        else if (extension == ".bmp")
+                        {
+                            GetPicFromControl(grid_export, "BMP", strFileName);
+                        }
+                        else
+                            MessageBox.Show("文件类型错误，请重新选择！");
+
+                        break;
+                    }
+                    
+                case 1:
+                    {
+                        OutPutParams_Win out_win = new OutPutParams_Win();
+                        out_win.Show();
+                        break;
+                    }
+                case 0: break;
+                default:break;
+
+
             }
 
-            Microsoft.Win32.SaveFileDialog ofd = new Microsoft.Win32.SaveFileDialog();
-            ofd.DefaultExt = ".csv";
-            ofd.Filter = "文件(*.csv)|*.csv|图像文件|*.bmp";
-            ofd.FileName = "五车间设备状态统计_" + DateTime.Now.ToString("yyyyMMddHHmmss");
-            string strFileName = ofd.FileName;
-            ofd.CheckFileExists = false;
-            
-            ofd.ValidateNames = true;
-            if (ofd.ShowDialog() == true)
-            {
-                strFileName = ofd.FileName;
-                
-                //其他代码
-            }
-            string extension = System.IO.Path.GetExtension(strFileName);
-            if (extension == ".csv")
-            {
-                FileInfo fi = new FileInfo(strFileName);
-                if (!fi.Directory.Exists)
-                {
-                    fi.Directory.Create();
-                }
-                FileStream fs = new FileStream(strFileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
-                //StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.Default);
-                StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8);
-                
-                //write columns header
-                string data = "项目," + string.Join(",", Line_Sets);
-                sw.WriteLine(data);
 
-
-                //arrActivation = new int[10];
-                data = "稼动率," + string.Join(",", arrActivation);
-                sw.WriteLine(data);
-
-                //line light status ;GYRTime = new int[30];
-                string[] arr_light = new string[3] { "正常时间(min)", "等待时间(min)", "警告时间(min)" };
-                for (int i = 0; i < 3; i++)
-                {
-                    data = arr_light[i] + ",";
-                    for (int j = 0; j < 10; j++)
-                    {
-                        data += GYRTime[j * 3 + i].ToString() + ",";
-                    }
-                    sw.WriteLine(data);
-                }
-
-                //each Mechine activiation  arrActivationPerMechine = new int[60];
-
-                for (int i = 0; i < 6; i++)
-                {
-                    data = DeviceInfo.Device_Set[i] + " 稼动率,";
-                    for (int j = 0; j < 10; j++)
-                    {
-                        data += arrActivationPerMechine[j * 6 + i].ToString() + ",";
-                    }
-                    sw.WriteLine(data);
-                }
-
-                //each Mechine GYRTime, GYRTimePerMechine = new int[190];
-                for (int i = 0; i < 6; i++)
-                {
-                    data = DeviceInfo.Device_Set[i] +" "+ arr_light[0]+ ",";
-                    for (int j = 0; j < 10; j++)
-                    {
-                        data += GYRTimePerMechine[j * 19 + i * 3].ToString() + ",";
-                    }
-                    sw.WriteLine(data);
-
-                    data = DeviceInfo.Device_Set[i] + " " + arr_light[1] + ",";
-                    for (int j = 0; j < 10; j++)
-                    {
-                        data += GYRTimePerMechine[j * 19 + i * 3 + 1].ToString() + ",";
-                    }
-                    sw.WriteLine(data);
-
-                    data = DeviceInfo.Device_Set[i] + " " + arr_light[2] + ",";
-                    for (int j = 0; j < 10; j++)
-                    {
-                        data += GYRTimePerMechine[j * 19 + i * 3 + 2].ToString() + ",";
-                    }
-                    sw.WriteLine(data);
-                }
-                sw.Close();
-                fs.Close();
-
-            }
-            else if (extension == ".bmp")
-            {
-                GetPicFromControl(grid_export, "BMP", strFileName);
-            }
-            else
-                MessageBox.Show("文件类型错误，请重新选择！");
 
         }
 
@@ -415,6 +479,9 @@ namespace eKanban_Console
             dt = DateTime.Now;
             gettime(dt);
             try {
+                //if (thread.IsAlive)
+                //    thread.Abort();
+                
                 thread = new Thread(UpdateData);
                 thread.Start();
                 thread.IsBackground = true;
@@ -547,6 +614,11 @@ namespace eKanban_Console
             return dt_start_check.Subtract(dt_startInterval).TotalSeconds;
         }
 
+
+        string[] arrStatus = new string[60];
+        string[] arrGYR = new string[200];
+        //string[] arrAct = new string[60];
+        string UpdateTime;
         //
         private void UpdateData()
         {
@@ -555,23 +627,23 @@ namespace eKanban_Console
 
             try
             {
-                string command = string.Format("select top 1* from device_statusCount where UpdateTime >= '{0}' and UpdateTime<='{1}' order by UpdateTime desc", start_time, end_time);
+                string command = string.Format("select top 1* from device_statusCount where UpdateTime >= dateadd(mi,-30,getdate()) order by UpdateTime desc");
                 SqlDataReader sr = sqlHelper.ExecuteReader(command);
                 if (sr.Read())
                 {
                     temp_sr = sr["DeviceStatus"].ToString();
-                    string[] arrStatus = temp_sr.Split(',');
+                    arrStatus = temp_sr.Split(',');
 
                     temp_sr = sr["GYRCount"].ToString();
-                    string[] arrGYR = temp_sr.Split(',');
-                    temp_sr = sr["Activation"].ToString();
-                    string[] arrAct = temp_sr.Split(',');
-                    string UpdateTime = sr["UpdateTime"].ToString();
+                    arrGYR = temp_sr.Split(',');
+                    //temp_sr = sr["Activation"].ToString();
+                    //arrAct = temp_sr.Split(',');
+                    UpdateTime = sr["UpdateTime"].ToString();
                     DateTime dt_update = Convert.ToDateTime(UpdateTime);
                     gettime(dt_update);
-                    act_value = new ChartValues<double>();
-                    y_value = new ChartValues<double>();
-                    r_value = new ChartValues<double>();
+                    //act_value = new ChartValues<double>();
+                    //y_value = new ChartValues<double>();
+                    //r_value = new ChartValues<double>();
 
                     for (int i = 0; i < 10; i++)
                     {
@@ -589,10 +661,15 @@ namespace eKanban_Console
                         GYRTime[i * 3 + 1] = GYRTimePerMechine[i * 19 + GYRTimePerMechine[i * 19 + 18] + 6];
                         GYRTime[i * 3 + 2] = GYRTimePerMechine[i * 19 + GYRTimePerMechine[i * 19 + 18] + 12];
 
-                        arrActivation[i] = int.Parse(arrAct[i]);
-                        act_value.Add((double)arrActivation[i]);
-                        y_value.Add((double)GYRTime[3 * i + 1]);
-                        r_value.Add((double)GYRTime[3 * i + 2]);
+                        arrActivation[i] = arrActivationPerMechine[i * 6 + GYRTimePerMechine[i * 19 + 18]];
+
+                        //act_value.Add((double)arrActivation[i]);
+                        //y_value.Add((double)GYRTime[3 * i + 1]);
+                        //r_value.Add((double)GYRTime[3 * i + 2]);
+
+                        act_value[i] = (double)arrActivation[i];
+                        y_value[i] = (double)GYRTime[3 * i + 1];
+                        r_value[i] = (double)GYRTime[3 * i + 2];
 
                     }
                     this.Dispatcher.BeginInvoke(new Action(() =>
@@ -601,18 +678,21 @@ namespace eKanban_Console
                         chart_YR.SeriesCollection.ElementAt(0).Values = y_value;
                         chart_YR.SeriesCollection.ElementAt(1).Values = r_value;
 
-                        tb_activation.Text = "当前车间设备稼动率 (平均稼动率为：" + ((int)act_value.Average()).ToString() + "% )";
-                        tb_yrtime.Text = "当前车间产线异常时间统计 (总计：等待时间 " + ((int)y_value.Sum()).ToString() + " 分钟，警告时间 " + ((int)r_value.Sum()).ToString() + " 分钟)";
+                        tb_activation.Text = "当前车间设备稼动率 (平均稼动率为：" + ((int)(act_value.Average() * 10) / 10f).ToString() + "% )";
+                        tb_yrtime.Text = "当前车间产线异常时间统计 (总计：等待时间 " + ((int)y_value.Sum()).ToString() + " 分钟，故障时间 " + ((int)r_value.Sum()).ToString() + " 分钟)";
                         tb_status.Text = "";
                     }));
 
                     bFlagUpdateData = true;
+
+                    GC.Collect();
                 }
                 else
                 {
                     //MessageBox.Show("该时间段没有数据！");
                     bFlagUpdateData = false;
                 }
+
             }
             catch (Exception err)
             {
@@ -620,6 +700,8 @@ namespace eKanban_Console
                     tb_status.Text = err.Message;
                 }));
             }
+
+            
         }
 
 
@@ -665,9 +747,9 @@ namespace eKanban_Console
             arrActivation = new int[10];
             arrActivationPerMechine = new int[60];
 
-            act_value = new ChartValues<double>();
-            y_value = new ChartValues<double>();
-            r_value = new ChartValues<double>();
+            //act_value = new ChartValues<double>();
+            //y_value = new ChartValues<double>();
+            //r_value = new ChartValues<double>();
 
             int[] arrGYTTimeClass = new int[190];
             int IndexOfMinGreen = 0;
@@ -682,7 +764,7 @@ namespace eKanban_Console
                     double startInterval = getStartInterval(ls_check[ls_count]);
                     int startFlag = 0;//初始化数据初始化标志位
 
-                    string command = string.Format("select top 1* from device_statusCount where UpdateTime > '{0}' and UpdateTime <= '{1}' order by UpdateTime asc",
+                    string command = string.Format("select top 1* from device_statusCount where UpdateTime > '{0}' and UpdateTime < '{1}' order by UpdateTime asc",
                         ls_check[ls_count].ToString("yyyy-MM-dd HH:mm:ss"), ls_check[ls_count + 1].ToString("yyyy-MM-dd HH:mm:ss"));
                     SqlDataReader sr = sqlHelper.ExecuteReader(command);
 
@@ -783,9 +865,12 @@ namespace eKanban_Console
 
                         arrActivation[i] = (int)Math.Round(GYRTime[i * 3 + 0] * 100 / totalInterval);
 
-                        act_value.Add((double)arrActivation[i]);
-                        y_value.Add((double)GYRTime[3 * i + 1]);
-                        r_value.Add((double)GYRTime[3 * i + 2]);
+                        //act_value.Add((double)arrActivation[i]);
+                        //y_value.Add((double)GYRTime[3 * i + 1]);
+                        //r_value.Add((double)GYRTime[3 * i + 2]);
+                        act_value[i] = (double)arrActivation[i];
+                        y_value[i] = (double)GYRTime[3 * i + 1];
+                        r_value[i] = (double)GYRTime[3 * i + 2];
                     }
                     //sw.WriteLine("GYRTimePerMechine," + string.Join(",", GYRTimePerMechine));
 
@@ -807,9 +892,12 @@ namespace eKanban_Console
                         //GYRTime[i * 3 + 1] = 0;
                         //GYRTime[i * 3 + 2] = 0;
                         arrActivation[i] = 0;
-                        act_value.Add((double)arrActivation[i]);
-                        y_value.Add((double)GYRTime[3 * i + 1]);
-                        r_value.Add((double)GYRTime[3 * i + 2]);
+                        //act_value.Add((double)arrActivation[i]);
+                        //y_value.Add((double)GYRTime[3 * i + 1]);
+                        //r_value.Add((double)GYRTime[3 * i + 2]);
+                        act_value[i] = (double)arrActivation[i];
+                        y_value[i] = (double)GYRTime[3 * i + 1];
+                        r_value[i] = (double)GYRTime[3 * i + 2];
                     }
                     GYRTimePerMechine = new int[190];
                     GYRTime = new int[30];
@@ -824,9 +912,11 @@ namespace eKanban_Console
                     chart_YR.SeriesCollection.ElementAt(1).Values = r_value;
 
                     tb_activation.Text = "当前车间设备稼动率 (平均稼动率为：" + ((int)act_value.Average()).ToString() + "% )";
-                    tb_yrtime.Text = "当前车间产线异常时间统计 (总计：等待时间 " + ((int)y_value.Sum()).ToString() + " 分钟，警告时间 " + ((int)r_value.Sum()).ToString() + " 分钟)";
+                    tb_yrtime.Text = "当前车间产线异常时间统计 (总计：等待时间 " + ((int)y_value.Sum()).ToString() + " 分钟，故障时间 " + ((int)r_value.Sum()).ToString() + " 分钟)";
                     tb_status.Text = "";
                 }));
+
+                GC.Collect();
 
             }
             catch (Exception err)

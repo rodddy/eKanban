@@ -93,6 +93,18 @@
     <Compile Include="Controls\MultiComboBox.cs" />
     <Compile Include="Controls\TabItemClose.cs" />
     <Compile Include="Convers\ValueConver.cs" />
+    <Compile Include="OutputDialog.xaml.cs">
+      <DependentUpon>OutputDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OutputDialogSettings.xaml.cs">
+      <DependentUpon>OutputDialogSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OutPutParams_Win.xaml.cs">
+      <DependentUpon>OutPutParams_Win.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Setting_Win_V2.xaml.cs">
+      <DependentUpon>Setting_Win_V2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\DataInitInstance.cs" />
     <Compile Include="MaintainLog_Win.xaml.cs">
       <DependentUpon>MaintainLog_Win.xaml</DependentUpon>
@@ -143,6 +155,22 @@
       <DependentUpon>MainWindow_Console.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="OutputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OutputDialogSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OutPutParams_Win.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Setting_Win_V2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Setting_Win.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -270,6 +298,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\minimize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\return.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

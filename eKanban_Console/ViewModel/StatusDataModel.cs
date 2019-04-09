@@ -18,37 +18,37 @@ namespace eKanban_Console
             YR_Flags = new ObservableCollection<StatusClass>();
 
             YR_Flags.Add(new StatusClass() { Category = "等待", Number = 66 });
-            YR_Flags.Add(new StatusClass() { Category = "警告", Number = 23 });
+            YR_Flags.Add(new StatusClass() { Category = "故障", Number = 23 });
             YR_Series.Add(new SeriesData() { DisplayName = "SMT 9线", Description = "SMT 9线", Items = YR_Flags });
 
             YR_Flags = new ObservableCollection<StatusClass>();
             YR_Flags.Add(new StatusClass() { Category = "等待", Number = 35 });
-            YR_Flags.Add(new StatusClass() { Category = "警告", Number = 63 });
+            YR_Flags.Add(new StatusClass() { Category = "故障", Number = 63 });
             YR_Series.Add(new SeriesData() { DisplayName = "SMT 10线", Description = "SMT 10线", Items = YR_Flags });
 
             YR_Flags = new ObservableCollection<StatusClass>();
             YR_Flags.Add(new StatusClass() { Category = "等待", Number = 51 });
-            YR_Flags.Add(new StatusClass() { Category = "警告", Number = 54 });
+            YR_Flags.Add(new StatusClass() { Category = "故障", Number = 54 });
             YR_Series.Add(new SeriesData() { DisplayName = "SMT 11线", Description = "SMT 11线", Items = YR_Flags });
 
             YR_Flags = new ObservableCollection<StatusClass>();
             YR_Flags.Add(new StatusClass() { Category = "等待", Number = 86 });
-            YR_Flags.Add(new StatusClass() { Category = "警告", Number = 68 });
+            YR_Flags.Add(new StatusClass() { Category = "故障", Number = 68 });
             YR_Series.Add(new SeriesData() { DisplayName = "SMT 12线", Description = "SMT 12线", Items = YR_Flags });
 
             YR_Flags = new ObservableCollection<StatusClass>();
             YR_Flags.Add(new StatusClass() { Category = "等待", Number = 45 });
-            YR_Flags.Add(new StatusClass() { Category = "警告", Number = 73 });
+            YR_Flags.Add(new StatusClass() { Category = "故障", Number = 73 });
             YR_Series.Add(new SeriesData() { DisplayName = "SMT 13线", Description = "SMT 13线", Items = YR_Flags });
 
             YR_Flags = new ObservableCollection<StatusClass>();
             YR_Flags.Add(new StatusClass() { Category = "等待", Number = 75 });
-            YR_Flags.Add(new StatusClass() { Category = "警告", Number = 71 });
+            YR_Flags.Add(new StatusClass() { Category = "故障", Number = 71 });
             YR_Series.Add(new SeriesData() { DisplayName = "SMT 14线", Description = "SMT 14线", Items = YR_Flags });
 
             YR_Flags = new ObservableCollection<StatusClass>();
             YR_Flags.Add(new StatusClass() { Category = "等待", Number = 43 });
-            YR_Flags.Add(new StatusClass() { Category = "警告", Number = 29 });
+            YR_Flags.Add(new StatusClass() { Category = "故障", Number = 29 });
             YR_Series.Add(new SeriesData() { DisplayName = "SMT 15线", Description = "SMT 15线", Items = YR_Flags });
 
             YR_Flags.ElementAt(0).Number = 75; YR_Flags.ElementAt(1).Number = 71;

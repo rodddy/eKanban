@@ -1,0 +1,27 @@
+﻿<Window x:Class="eKanban_Console.OutputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:eKanban_Console"
+        mc:Ignorable="d"
+        Title="导出数据" Height="200" Width="300" ResizeMode="NoResize" Closing="Window_Closing">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.ColumnSpan="10" Grid.Row="0" Text="导出历史数据还是当前数据？" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18"/>
+
+        <Button  Grid.Column="0" Grid.Row="1" Name="btn_ok" Style="{StaticResource BtnInfoStyle}" Width="70" Height="30" FontSize="14" Content="当前数据" Click="btn_ok_Click"/>
+        <Button  Grid.Column="1" Grid.Row="1" Name="btn_no" Style="{StaticResource BtnInfoStyle}" Width="70" Height="30" FontSize="14" Content="历史数据" Click="btn_no_Click"/>
+        <Button  Grid.Column="2" Grid.Row="1" Name="btn_cancel" Style="{StaticResource BtnInfoStyle}" Width="70" Height="20" FontSize="14" Content="取  消" Click="btn_cancel_Click"/>
+
+    </Grid>
+</Window>

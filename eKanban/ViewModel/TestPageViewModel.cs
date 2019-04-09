@@ -40,7 +40,7 @@ namespace TestApplication.Shared
             Red_Flags.Add(new StatusClass() { Category = "Line 10", Number = 34 });
 
             Series.Add(new SeriesData() { DisplayName = "等待", Items = Yellow_Flags });
-            Series.Add(new SeriesData() { DisplayName = "警告", Items = Red_Flags });
+            Series.Add(new SeriesData() { DisplayName = "故障", Items = Red_Flags });
         }
 
         public List<SeriesData> Series
